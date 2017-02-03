@@ -13,7 +13,7 @@ public class Transliterator {
             boolean lc = Character.isLowerCase(ch); // для сохранения регистра
             ch = toUpperCase(ch);// поднимаю регистр
 
-            if (ch == 'Y' & (i + 1 < cyrWord.length())) {
+            if (ch == 'Y' & (i < cyrWord.length() - 1)) {
                 // Префиксная нотация вначале.
                 // Проверяем, что символ первый, что с него начинается слово
                 i++; // преходим ко второму символу сочетания
@@ -23,7 +23,7 @@ public class Transliterator {
                         sb.append(ch('Є', lc));
                         break;
                     case 'I':
-                        if (i+1 == cyrWord.length()) {
+                        if (i == cyrWord.length() - 1) {
                             sb.append(ch('И', lc));
                             sb.append(ch('Й', lc));
                             break;
@@ -44,9 +44,7 @@ public class Transliterator {
                         }
                         i--;
                 }
-            }
-
-            else if (ch == 'I' & i > 0 & (i + 1 < cyrWord.length())) {
+            } else if (ch == 'I' & i > 0 & (i < cyrWord.length() - 1)) {
                 // Префиксная нотация вначале.
                 // Если с искомого символа начинается слово.
                 i++;
@@ -63,7 +61,7 @@ public class Transliterator {
                         sb.append(ch('Я', lc));
                         break;
                     case 'I': // check for last symbol
-                        if (i == cyrWord.length() - 1 ) {
+                        if (i == cyrWord.length() - 1) {
                             sb.append(ch('І', lc));
                             sb.append(ch('Й', lc));
                             break;
@@ -73,19 +71,21 @@ public class Transliterator {
                         // если не встретили искомое совпадение, то возращаемся на одну последовательному поиску.
                         i--;
                 }
-            }
-
-            else if (ch == 'S' & i >= 0 & (i + 1 < cyrWord.length())) { // Префиксная нотация вначале.  Если с искомого символа начинается слово.
+            } else if (ch == 'S' & i >= 0 & (i < cyrWord.length() - 1)) { // Префиксная нотация вначале.  Если с искомого символа начинается слово.
                 i++; // преходим ко второму символу сочетания
                 ch = toUpperCase(cyrWord.charAt(i));
                 switch (ch) {
                     case 'H':
-                        if (toUpperCase(cyrWord.charAt(i + 1)) == 'C') {
-                            if (toUpperCase(cyrWord.charAt(i + 2)) == 'H') {
-                                sb.append(ch('Щ', lc));
-                                i++;
-                                i++;
-                                break;
+                        if ((i != cyrWord.length() - 1)) {
+                            //следующий элемент в массива
+                            if (toUpperCase(cyrWord.charAt(i + 1)) == 'C') {
+                                //следующий элемент в массива
+                                if (toUpperCase(cyrWord.charAt(i + 2)) == 'H') {
+                                    sb.append(ch('Щ', lc));
+                                    i++;
+                                    i++;
+                                    break;
+                                }
                             }
                         }
                         sb.append(ch('Ш', lc));
@@ -96,9 +96,7 @@ public class Transliterator {
                         // если не встретили искомое совпадение, то возращаемся на одну последовательному поиску.
                         i--;
                 }
-            }
-
-            else if (ch == 'C' & (i + 1 < cyrWord.length())) {
+            } else if (ch == 'C' & (i < cyrWord.length() - 1)) {
                 // Префиксная нотация вначале.  Если с искомого символа начинается слово.
                 i++; // преходим ко второму символу сочетания
                 ch = toUpperCase(cyrWord.charAt(i));
@@ -109,9 +107,7 @@ public class Transliterator {
                     default: // если не встретили искомое совпадение, то возращаемся на одну последовательному поиску.
                         i--;
                 }
-            }
-
-            else if (ch == 'K' & (i + 1 < cyrWord.length())) { //
+            } else if (ch == 'K' & (i < cyrWord.length() - 1)) { //
                 i++; // преходим ко второму символу сочетания
                 ch = toUpperCase(cyrWord.charAt(i));
                 switch (ch) {
@@ -122,9 +118,7 @@ public class Transliterator {
                         sb.append(ch('К', lc));
                         i--;
                 }
-            }
-
-            else if (ch == 'T' & (i + 1 < cyrWord.length())) { //
+            } else if (ch == 'T' & (i < cyrWord.length() - 1)) { //
                 i++; // преходим ко второму символу сочетания
                 ch = toUpperCase(cyrWord.charAt(i));
                 switch (ch) {
@@ -135,7 +129,7 @@ public class Transliterator {
                         sb.append(ch('Т', lc));
                         i--;
                 }
-            } else if (ch == 'Z' & (i + 1 < cyrWord.length())) { //
+            } else if (ch == 'Z' & (i < cyrWord.length() - 1)) { //
                 i++; // преходим ко второму символу сочетания
                 ch = toUpperCase(cyrWord.charAt(i));
                 switch (ch) {
@@ -147,6 +141,19 @@ public class Transliterator {
                         break;
                     default: // если не встретили искомое совпадение, то возращаемся на одну последовательному поиску.
                         sb.append(ch('З', lc));
+                        i--;
+                }
+            } else if (ch == 'A' & (i < cyrWord.length() - 1)) { //
+                i++; // преходим ко второму символу сочетания
+                ch = toUpperCase(cyrWord.charAt(i));
+                switch (ch) {
+                    case 'I':
+                        sb.append(ch('А', lc));
+                        sb.append(ch('Й', lc));
+                        break;
+                    default:
+                        // если не встретили искомое совпадение, то возращаемся на одну последовательному поиску.
+                        sb.append(ch('А', lc));
                         i--;
                 }
             }
@@ -259,7 +266,6 @@ public class Transliterator {
     /**
      * Вспомогательная функция для восстановления регистра
      */
-
     private static char ch(char ch, boolean toLowerCase) {
         if (toLowerCase) return Character.toLowerCase(ch);
         else return ch;
